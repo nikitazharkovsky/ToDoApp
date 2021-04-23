@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ToDoApp</string>
+    <string name="add_task">Add a new task</string>
+    <string name="question_on_add_task">What do you want to do next?</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="edit">Edit task</string>
+    <string name="save">Save</string>
+    <string name="no_tasks">You have no current tasks</string>
+    <string name="confirm_delete">Are you sure you want to delete the Task?</string>
+</resources>
