@@ -175,10 +175,10 @@ class MainActivity : AppCompatActivity(), IMainActivity {
         scrollListener.resetState()
         runOnUiThread {
             listAdapter.notifyDataSetChanged()
-            if (taskList.isEmpty()) {
-                listEmptyTextView.text = getString(string.no_tasks)
+            listEmptyTextView.text = if (taskList.isEmpty()) {
+                getString(string.no_tasks)
             } else {
-                listEmptyTextView.text = ""
+                ""
             }
         }
     }

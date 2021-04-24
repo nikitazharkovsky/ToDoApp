@@ -16,17 +16,6 @@ class DialogHelper(
         val button: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         button.isEnabled = false
         taskEditText.doAfterTextChanged {
-            button.isEnabled = taskEditText.text.isNotEmpty()
-        }
-
-        button.setOnClickListener {
-            val newTask = taskEditText.text.toString()
-            dialogActions.prepareForAction()
-            Timer().schedule(timerTask {
-                if (dialogActions.saveTask(exceptionTextView, newTask)) {
-                    //Dismiss once everything is OK.
-                    dialog.dismiss()
-                }
             }, 0)
         }
     }
