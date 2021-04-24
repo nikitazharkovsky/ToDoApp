@@ -2,66 +2,49 @@ package com.example.todoapp
 
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
-import com.example.todoapp.db.ITaskDbHelper
-import java.lang.Exception
 import java.util.*
 import kotlin.concurrent.timerTask
 
 class DialogHelper(
-        private val progressBar: ProgressBar,
-        private val dbHelper: ITaskDbHelper,
-        private val mainActivity: IMainActivity
+    private val dialogActions: IDialogActions
 ) {
-    private val stopProgressBar = Runnable { progressBar.visibility = ProgressBar.GONE }
 
     fun saveDialogAction(dialog: AlertDialog, taskEditText: EditText, exceptionTextView: TextView) {
         val button: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         button.isEnabled = false
-            taskEditText.doAfterTextChanged {
+        taskEditText.doAfterTextChanged {
             button.isEnabled = taskEditText.text.isNotEmpty()
         }
 
         button.setOnClickListener {
             val newTask = taskEditText.text.toString()
-            progressBar.visibility = ProgressBar.VISIBLE
+            dialogActions.prepareForAction()
             Timer().schedule(timerTask {
-                try {
-                    exceptionTextView.text = ""
-
-                    dbHelper.add(newTask)
-                    mainActivity.updateUI()
-                    mainActivity.runOnUiThread(stopProgressBar)
-
+                if (dialogActions.saveTask(exceptionTextView, newTask)) {
                     //Dismiss once everything is OK.
                     dialog.dismiss()
-                } catch (e: Exception) {
-                    exceptionTextView.text = e.message
                 }
             }, 0)
         }
     }
 
-    fun editDialogAction(dialog: AlertDialog, taskEditText: EditText, exceptionTextView: TextView, originalTask: String) {
+    fun editDialogAction(
+        dialog: AlertDialog,
+        taskEditText: EditText,
+        exceptionTextView: TextView,
+        originalTask: String
+    ) {
         val button: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         button.setOnClickListener {
             val newTask = taskEditText.text.toString()
-            progressBar.visibility = ProgressBar.VISIBLE
+            dialogActions.prepareForAction()
             Timer().schedule(timerTask {
-                try {
-                    exceptionTextView.text = ""
-
-                    dbHelper.update(originalTask, newTask)
-                    mainActivity.updateUI()
-                    mainActivity.runOnUiThread(stopProgressBar)
-
+                if (dialogActions.editTask(exceptionTextView, originalTask, newTask)) {
                     //Dismiss once everything is OK.
                     dialog.dismiss()
-                } catch (e: Exception) {
-                    exceptionTextView.text = e.message
                 }
             }, 0)
         }
@@ -70,12 +53,14 @@ class DialogHelper(
     fun deleteDialogAction(dialog: AlertDialog, task: String) {
         val button: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
         button.setOnClickListener {
-            progressBar.visibility = ProgressBar.VISIBLE
+            dialogActions.prepareForAction()
             Timer().schedule(timerTask {
-                dbHelper.delete(task)
-                mainActivity.updateUI()
-                mainActivity.runOnUiThread(stopProgressBar)
+                if (dialogActions.deleteTask(task)) {
+                    //Dismiss once everything is OK.
+                    dialog.dismiss()
+                }
             }, 0)
         }
     }
 }
+

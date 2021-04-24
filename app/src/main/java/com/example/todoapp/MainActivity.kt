@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity(), IMainActivity {
         var recyclerView = findViewById<RecyclerView>(R.id.list_todo)
 
         dbHelper = TaskDbHelper(this)
-        dialogHelper = DialogHelper(progressBar, dbHelper, this)
+        val dialogActions = DialogActions(progressBar, dbHelper, this)
+        dialogHelper = DialogHelper(dialogActions)
 
         listAdapter = ListAdapter()
         val linearLayoutManager = LinearLayoutManager(this)
@@ -152,9 +153,9 @@ class MainActivity : AppCompatActivity(), IMainActivity {
         textView.setPadding(50, 0, 50, 0)
 
         val dialog = AlertDialog.Builder(this)
-                .setTitle(getString(string.edit))
+                .setTitle(getString(string.remove))
                 .setView(textView)
-                .setPositiveButton(getString(string.save)) { _, _ -> }
+                .setPositiveButton(getString(string.remove)) { _, _ -> }
                 .setNegativeButton(string.cancel, null)
                 .create()
 

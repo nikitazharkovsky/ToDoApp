@@ -8,4 +8,5 @@
     <string name="save">Save</string>
     <string name="no_tasks">You have no current tasks</string>
     <string name="confirm_delete">Are you sure you want to delete the Task?</string>
+    <string name="remove">Remove</string>
 </resources>
